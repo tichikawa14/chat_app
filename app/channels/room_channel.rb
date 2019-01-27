@@ -11,8 +11,9 @@ class RoomChannel < ApplicationCable::Channel
   # this.perform('speak');から処理が実行する
   def speak(data)
     #room.jsから送られてきたデータを受信
-    Message.create!(content: data["message"])
+    message =  Message.create!(content: data["message"])
+    template = ApplicationController.renderer.render(partial: 'messages/message', locals: {message: message})
     #room.jsのRoomChannelにデータを送信
-    ActionCable.server.broadcast 'room_channel', data["message"]
+    ActionCable.server.broadcast 'room_channel', template
   end
 end

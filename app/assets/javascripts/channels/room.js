@@ -9,9 +9,10 @@ App.room = App.cable.subscriptions.create("RoomChannel", {
     // Called when the subscription has been terminated by the server
   },
 
-  received: function(data) {
+  received: function(message) {
     // Called when there's incoming data on the websocket for this channel
-    alert(data)
+    const messages = document.getElementById('messages')
+    messages.innerHTML += message
   },
 
   speak: function(content) {
@@ -19,3 +20,13 @@ App.room = App.cable.subscriptions.create("RoomChannel", {
     return this.perform('speak', {message: content});
   }
 });
+
+document.addEventListener('DOMContentLoaded', function(){
+  const input = document.getElementById('chat-input')
+  const button = document.getElementById('submit')
+  button.addEventListener('click', function(){
+    var content = input.value
+    App.room.speak(content)
+    content = ""
+  })
+})
